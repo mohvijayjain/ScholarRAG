@@ -1,0 +1,77 @@
+# =========================
+# Python
+# =========================
+
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtual Environment
+venv/
+env/
+.venv/
+
+# =========================
+# Environment Variables
+# =========================
+
+.env
+.env.*
+
+# =========================
+# Jupyter Notebook
+# =========================
+
+.ipynb_checkpoints/
+
+# =========================
+# RAG Data
+# =========================
+
+# PDF documents (large files)
+data/*.pdf
+
+# Vector database
+chroma_db/
+
+# Embedding cache
+*.bin
+*.pkl
+
+# =========================
+# Logs
+# =========================
+
+*.log
+logs/
+
+# =========================
+# IDE
+# =========================
+
+.vscode/
+.idea/
+
+# =========================
+# OS
+# =========================
+
+.DS_Store
+Thumbs.db
+
+# =========================
+# Build / Cache
+# =========================
+
+.cache/
+.mypy_cache/
+.pytest_cache/
+
+# =========================
+# Model files
+# =========================
+
+models/
+*.pt
+*.pth
+*.safetensors
