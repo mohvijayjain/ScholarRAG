@@ -1,0 +1,702 @@
+[
+  {
+    "id": 1,
+    "question": "Why did the Transformer architecture replace recurrent neural networks?",
+    "answer": "Transformers replaced recurrent neural networks because they allow parallel processing of sequences using self-attention and can capture long-range dependencies more effectively.",
+    "source": "Attention Is All You Need",
+    "category": "concept"
+  },
+  {
+    "id": 2,
+    "question": "What is the main innovation introduced by the Transformer model?",
+    "answer": "The main innovation is the self-attention mechanism, which allows the model to understand relationships between all tokens in a sequence without recurrence.",
+    "source": "Attention Is All You Need",
+    "category": "concept"
+  },
+  {
+    "id": 3,
+    "question": "How does self-attention work in Transformers?",
+    "answer": "Self-attention calculates the importance of each token relative to other tokens using Query, Key, and Value representations.",
+    "source": "Attention Is All You Need",
+    "category": "architecture"
+  },
+  {
+    "id": 4,
+    "question": "What are Query, Key, and Value vectors in attention?",
+    "answer": "Query represents what information a token is searching for, Key represents available information, and Value contains the actual information passed forward.",
+    "source": "Attention Is All You Need",
+    "category": "architecture"
+  },
+  {
+    "id": 5,
+    "question": "Why are positional encodings needed in Transformers?",
+    "answer": "Transformers process all tokens simultaneously, so positional encodings provide information about the order of tokens in a sequence.",
+    "source": "Attention Is All You Need",
+    "category": "architecture"
+  },
+  {
+    "id": 6,
+    "question": "What is multi-head attention?",
+    "answer": "Multi-head attention uses multiple attention mechanisms in parallel, allowing the model to learn different relationships between tokens.",
+    "source": "Attention Is All You Need",
+    "category": "architecture"
+  },
+  {
+    "id": 7,
+    "question": "What is the role of the feed-forward network in a Transformer block?",
+    "answer": "The feed-forward network transforms the representations produced by attention and adds additional non-linear processing.",
+    "source": "Attention Is All You Need",
+    "category": "architecture"
+  },
+  {
+    "id": 8,
+    "question": "Why are Transformers computationally efficient compared to RNNs?",
+    "answer": "Transformers allow parallel computation across tokens, while RNNs process tokens sequentially.",
+    "source": "Attention Is All You Need",
+    "category": "comparison"
+  },
+  {
+    "id": 9,
+    "question": "What problem does attention solve in sequence modeling?",
+    "answer": "Attention helps models focus on important parts of the input sequence and handle long-range dependencies.",
+    "source": "Attention Is All You Need",
+    "category": "concept"
+  },
+  {
+    "id": 10,
+    "question": "What is the difference between encoder and decoder in Transformers?",
+    "answer": "The encoder creates contextual representations of input data, while the decoder generates output sequences using encoded information.",
+    "source": "Attention Is All You Need",
+    "category": "architecture"
+  },
+  {
+    "id": 11,
+    "question": "What is BERT?",
+    "answer": "BERT is a bidirectional Transformer encoder model designed to learn language representations by considering context from both directions.",
+    "source": "BERT",
+    "category": "concept"
+  },
+  {
+    "id": 12,
+    "question": "How is BERT different from GPT models?",
+    "answer": "BERT uses a bidirectional encoder architecture, while GPT uses a left-to-right autoregressive decoder architecture.",
+    "source": "BERT and GPT",
+    "category": "comparison"
+  },
+  {
+    "id": 13,
+    "question": "What are the two main pre-training objectives of BERT?",
+    "answer": "BERT is pretrained using Masked Language Modeling and Next Sentence Prediction tasks.",
+    "source": "BERT",
+    "category": "concept"
+  },
+  {
+    "id": 14,
+    "question": "What is Masked Language Modeling in BERT?",
+    "answer": "Masked Language Modeling hides some tokens from the input and trains BERT to predict those missing tokens.",
+    "source": "BERT",
+    "category": "architecture"
+  },
+  {
+    "id": 15,
+    "question": "Why is bidirectional context important in BERT?",
+    "answer": "Bidirectional context allows BERT to understand a word based on information from both previous and following words.",
+    "source": "BERT",
+    "category": "concept"
+  },
+  {
+    "id": 16,
+    "question": "What is fine-tuning in BERT?",
+    "answer": "Fine-tuning adapts the pretrained BERT model parameters for specific downstream tasks such as classification or question answering.",
+    "source": "BERT",
+    "category": "implementation"
+  },
+  {
+    "id": 17,
+    "question": "Why was BERT successful for NLP tasks?",
+    "answer": "BERT learned powerful general language representations from large-scale pretraining that could be adapted to many tasks.",
+    "source": "BERT",
+    "category": "concept"
+  },
+  {
+    "id": 18,
+    "question": "What limitation does BERT have compared to generative models?",
+    "answer": "BERT is mainly designed for understanding tasks and is not naturally optimized for text generation.",
+    "source": "BERT",
+    "category": "comparison"
+  },
+  {
+    "id": 19,
+    "question": "What is GPT-3?",
+    "answer": "GPT-3 is a large autoregressive language model trained on massive text data with 175 billion parameters.",
+    "source": "GPT-3",
+    "category": "concept"
+  },
+  {
+    "id": 20,
+    "question": "What does few-shot learning mean in GPT-3?",
+    "answer": "Few-shot learning means GPT-3 can perform new tasks after seeing only a few examples in the prompt without parameter updates.",
+    "source": "GPT-3",
+    "category": "concept"
+  },
+  {
+    "id": 21,
+    "question": "What is zero-shot learning in GPT-3?",
+    "answer": "Zero-shot learning means GPT-3 performs a task only from the instruction without seeing examples.",
+    "source": "GPT-3",
+    "category": "concept"
+  },
+  {
+    "id": 22,
+    "question": "Why did GPT-3 demonstrate strong few-shot abilities?",
+    "answer": "GPT-3 showed strong few-shot abilities because scaling model size and training data improved its ability to learn patterns from prompts.",
+    "source": "GPT-3",
+    "category": "concept"
+  },
+  {
+    "id": 23,
+    "question": "What architecture does GPT-3 use?",
+    "answer": "GPT-3 uses a decoder-only Transformer architecture that predicts the next token in a sequence.",
+    "source": "GPT-3",
+    "category": "architecture"
+  },
+  {
+    "id": 24,
+    "question": "What is the main difference between GPT-3 and traditional supervised learning models?",
+    "answer": "GPT-3 can adapt to many tasks through prompting instead of requiring separate training datasets for every task.",
+    "source": "GPT-3",
+    "category": "comparison"
+  },
+  {
+    "id": 25,
+    "question": "What is the scaling hypothesis discussed in GPT-3?",
+    "answer": "The scaling hypothesis suggests that increasing model size, data, and computation can improve language model capabilities.",
+    "source": "GPT-3",
+    "category": "concept"
+  },
+  {
+    "id": 26,
+    "question": "What is LLaMA?",
+    "answer": "LLaMA is a family of large language models developed by Meta that achieve competitive performance with fewer parameters and efficient training.",
+    "source": "LLaMA",
+    "category": "concept"
+  },
+  {
+    "id": 27,
+    "question": "What was the main motivation behind developing LLaMA?",
+    "answer": "The motivation was to build efficient large language models that provide strong performance while requiring fewer computational resources.",
+    "source": "LLaMA",
+    "category": "concept"
+  },
+  {
+    "id": 28,
+    "question": "How does LLaMA improve training efficiency?",
+    "answer": "LLaMA improves efficiency through better data usage, optimized architectures, and training smaller models for longer periods.",
+    "source": "LLaMA",
+    "category": "implementation"
+  },
+  {
+    "id": 29,
+    "question": "Why are smaller language models like LLaMA important?",
+    "answer": "Smaller models reduce computational cost and make advanced language models accessible for more researchers and organizations.",
+    "source": "LLaMA",
+    "category": "concept"
+  },
+  {
+    "id": 30,
+    "question": "What architecture does LLaMA use?",
+    "answer": "LLaMA uses a decoder-only Transformer architecture similar to GPT models.",
+    "source": "LLaMA",
+    "category": "architecture"
+  },
+  {
+    "id": 31,
+    "question": "What improvements were introduced in LLaMA 2 compared to LLaMA?",
+    "answer": "LLaMA 2 introduced improved training data, larger training scale, better safety alignment, and instruction-tuned models.",
+    "source": "LLaMA 2",
+    "category": "comparison"
+  },
+  {
+    "id": 32,
+    "question": "What is LLaMA 2 Chat?",
+    "answer": "LLaMA 2 Chat is an instruction-tuned version of LLaMA 2 designed for conversational applications.",
+    "source": "LLaMA 2",
+    "category": "concept"
+  },
+  {
+    "id": 33,
+    "question": "Why is instruction tuning used in LLaMA 2?",
+    "answer": "Instruction tuning improves the ability of the model to follow human commands and generate helpful responses.",
+    "source": "LLaMA 2",
+    "category": "implementation"
+  },
+  {
+    "id": 34,
+    "question": "How does LLaMA 2 improve model safety?",
+    "answer": "LLaMA 2 uses safety fine-tuning, reinforcement learning from human feedback, and safety evaluations.",
+    "source": "LLaMA 2",
+    "category": "concept"
+  },
+  {
+    "id": 35,
+    "question": "Why are open-source LLMs important?",
+    "answer": "Open-source models allow researchers and developers to study, modify, and deploy language models more easily.",
+    "source": "LLaMA 2",
+    "category": "concept"
+  },
+  {
+    "id": 36,
+    "question": "What is Retrieval Augmented Generation (RAG)?",
+    "answer": "RAG is a framework that combines document retrieval with language generation to provide external knowledge to an LLM.",
+    "source": "Retrieval-Augmented Generation",
+    "category": "concept"
+  },
+  {
+    "id": 37,
+    "question": "Why was RAG introduced?",
+    "answer": "RAG was introduced to reduce hallucination and allow language models to use up-to-date external information.",
+    "source": "Retrieval-Augmented Generation",
+    "category": "concept"
+  },
+  {
+    "id": 38,
+    "question": "What are the main components of a RAG system?",
+    "answer": "A RAG system contains a retriever that finds relevant documents and a generator that produces answers using retrieved context.",
+    "source": "Retrieval-Augmented Generation",
+    "category": "architecture"
+  },
+  {
+    "id": 39,
+    "question": "How does RAG differ from traditional language models?",
+    "answer": "Traditional language models rely mainly on stored parameters, while RAG retrieves external documents during inference.",
+    "source": "Retrieval-Augmented Generation",
+    "category": "comparison"
+  },
+  {
+    "id": 40,
+    "question": "What problem of LLMs does RAG solve?",
+    "answer": "RAG helps solve knowledge limitations and hallucination by grounding responses in retrieved information.",
+    "source": "Retrieval-Augmented Generation",
+    "category": "concept"
+  },
+  {
+    "id": 41,
+    "question": "What is the retriever component in RAG?",
+    "answer": "The retriever searches a collection of documents and returns the most relevant passages for a given query.",
+    "source": "Retrieval-Augmented Generation",
+    "category": "architecture"
+  },
+  {
+    "id": 42,
+    "question": "What is the generator component in RAG?",
+    "answer": "The generator is a language model that uses retrieved documents and the user query to generate an answer.",
+    "source": "Retrieval-Augmented Generation",
+    "category": "architecture"
+  },
+  {
+    "id": 43,
+    "question": "What is Dense Passage Retrieval (DPR)?",
+    "answer": "DPR is a retrieval method that uses dense vector embeddings to find relevant passages based on semantic similarity.",
+    "source": "Dense Passage Retrieval",
+    "category": "concept"
+  },
+  {
+    "id": 44,
+    "question": "How is DPR different from traditional keyword-based retrieval?",
+    "answer": "DPR uses neural embeddings to understand semantic meaning instead of relying only on keyword matching.",
+    "source": "Dense Passage Retrieval",
+    "category": "comparison"
+  },
+  {
+    "id": 45,
+    "question": "How does DPR represent questions and passages?",
+    "answer": "DPR uses separate encoders to convert questions and passages into dense vector representations.",
+    "source": "Dense Passage Retrieval",
+    "category": "architecture"
+  },
+  {
+    "id": 46,
+    "question": "How does DPR retrieve relevant documents?",
+    "answer": "DPR retrieves documents by comparing query embeddings with passage embeddings using similarity measures.",
+    "source": "Dense Passage Retrieval",
+    "category": "implementation"
+  },
+  {
+    "id": 47,
+    "question": "Why are dense embeddings useful for retrieval?",
+    "answer": "Dense embeddings capture semantic relationships and can retrieve relevant information even when exact words are different.",
+    "source": "Dense Passage Retrieval",
+    "category": "concept"
+  },
+  {
+    "id": 48,
+    "question": "What is the role of negative passages in DPR training?",
+    "answer": "Negative passages help train the model to distinguish relevant documents from irrelevant ones.",
+    "source": "Dense Passage Retrieval",
+    "category": "implementation"
+  },
+  {
+    "id": 49,
+    "question": "Why is DPR important for modern RAG systems?",
+    "answer": "DPR provides an effective retrieval mechanism that allows RAG systems to find semantically relevant information.",
+    "source": "Dense Passage Retrieval",
+    "category": "concept"
+  },
+  {
+    "id": 50,
+    "question": "What similarity metric is commonly used for dense retrieval?",
+    "answer": "Dense retrieval commonly uses dot product or cosine similarity between query and document embeddings.",
+    "source": "Dense Passage Retrieval",
+    "category": "implementation"
+  },
+  {
+    "id": 51,
+    "question": "What is Fusion-in-Decoder (FiD)?",
+    "answer": "Fusion-in-Decoder is a retrieval-augmented architecture where multiple retrieved passages are encoded separately and combined during decoding to generate answers.",
+    "source": "Fusion-in-Decoder",
+    "category": "concept"
+},
+{
+    "id": 52,
+    "question": "How does FiD combine information from multiple documents?",
+    "answer": "FiD encodes each retrieved passage independently and allows the decoder to attend over all encoded passages when generating an answer.",
+    "source": "Fusion-in-Decoder",
+    "category": "architecture"
+  },
+  {
+    "id": 53,
+    "question": "Why does FiD improve open-domain question answering?",
+    "answer": "FiD improves question answering by allowing the model to use information from multiple retrieved documents instead of relying on a single passage.",
+    "source": "Fusion-in-Decoder",
+    "category": "concept"
+  },
+  {
+    "id": 54,
+    "question": "What is the main difference between FiD and traditional encoder-decoder models?",
+    "answer": "Traditional models encode one input sequence, while FiD separately encodes multiple retrieved passages and fuses them in the decoder.",
+    "source": "Fusion-in-Decoder",
+    "category": "comparison"
+  },
+  {
+    "id": 55,
+    "question": "What is the advantage of separating passage encoding in FiD?",
+    "answer": "Separate encoding allows the model to process many retrieved documents and combine their information efficiently during generation.",
+    "source": "Fusion-in-Decoder",
+    "category": "architecture"
+  },
+  {
+    "id": 56,
+    "question": "What is Self-RAG?",
+    "answer": "Self-RAG is a framework that enables language models to decide when retrieval is needed and evaluate their own generated responses.",
+    "source": "Self-RAG",
+    "category": "concept"
+  },
+  {
+    "id": 57,
+    "question": "How is Self-RAG different from traditional RAG?",
+    "answer": "Traditional RAG always retrieves documents, while Self-RAG allows the model to decide whether retrieval is necessary.",
+    "source": "Self-RAG",
+    "category": "comparison"
+  },
+  {
+    "id": 58,
+    "question": "What are reflection tokens in Self-RAG?",
+    "answer": "Reflection tokens are special signals used by the model to evaluate retrieval quality and response correctness.",
+    "source": "Self-RAG",
+    "category": "architecture"
+  },
+  {
+    "id": 59,
+    "question": "How does Self-RAG reduce hallucination?",
+    "answer": "Self-RAG reduces hallucination by allowing the model to retrieve evidence and critique its own generated answers.",
+    "source": "Self-RAG",
+    "category": "concept"
+  },
+  {
+    "id": 60,
+    "question": "Why is adaptive retrieval useful in Self-RAG?",
+    "answer": "Adaptive retrieval avoids unnecessary searches and retrieves information only when additional knowledge is required.",
+    "source": "Self-RAG",
+    "category": "implementation"
+  },
+  {
+    "id": 61,
+    "question": "What is the purpose of RAGAS?",
+    "answer": "RAGAS is an evaluation framework designed to measure the performance and reliability of RAG pipelines.",
+    "source": "RAGAS",
+    "category": "concept"
+  },
+  {
+    "id": 62,
+    "question": "What are the main metrics provided by RAGAS?",
+    "answer": "The main RAGAS metrics are faithfulness, answer relevance, context precision, and context recall.",
+    "source": "RAGAS",
+    "category": "evaluation"
+  },
+  {
+    "id": 63,
+    "question": "What does faithfulness measure in RAGAS?",
+    "answer": "Faithfulness measures whether the generated answer is supported by the retrieved context.",
+    "source": "RAGAS",
+    "category": "evaluation"
+  },
+  {
+    "id": 64,
+    "question": "What does answer relevance measure in RAGAS?",
+    "answer": "Answer relevance measures whether the generated answer properly addresses the user question.",
+    "source": "RAGAS",
+    "category": "evaluation"
+  },
+  {
+    "id": 65,
+    "question": "What does context precision measure?",
+    "answer": "Context precision measures how much of the retrieved context is actually relevant for answering the question.",
+    "source": "RAGAS",
+    "category": "evaluation"
+  },
+  {
+    "id": 66,
+    "question": "What does context recall measure?",
+    "answer": "Context recall measures whether the retrieved documents contain all required information needed for the answer.",
+    "source": "RAGAS",
+    "category": "evaluation"
+  },
+  {
+    "id": 67,
+    "question": "Why is RAG evaluation different from normal LLM evaluation?",
+    "answer": "RAG evaluation must measure both retrieval quality and answer generation quality.",
+    "source": "RAGAS",
+    "category": "evaluation"
+  },
+  {
+    "id": 68,
+    "question": "Why is faithfulness important for RAG systems?",
+    "answer": "Faithfulness ensures that the model generates answers based on retrieved evidence instead of unsupported information.",
+    "source": "RAGAS",
+    "category": "evaluation"
+  },
+  {
+    "id": 69,
+    "question": "How can RAGAS help improve a RAG pipeline?",
+    "answer": "RAGAS identifies weaknesses in retrieval and generation, helping developers optimize chunking, retrieval, and prompting.",
+    "source": "RAGAS",
+    "category": "implementation"
+  },
+  {
+    "id": 70,
+    "question": "Why are automated evaluation frameworks needed for RAG?",
+    "answer": "Automated evaluation provides consistent measurement of retrieval and generation quality without relying only on human evaluation.",
+    "source": "RAGAS",
+    "category": "evaluation"
+  },
+  {
+    "id": 71,
+    "question": "What is LoRA?",
+    "answer": "LoRA is a parameter-efficient fine-tuning technique that adapts large language models by training small low-rank matrices instead of all parameters.",
+    "source": "LoRA",
+    "category": "concept"
+  },
+  {
+    "id": 72,
+    "question": "Why is LoRA more efficient than full fine-tuning?",
+    "answer": "LoRA reduces memory and computation requirements because only a small number of additional parameters are trained.",
+    "source": "LoRA",
+    "category": "comparison"
+  },
+  {
+    "id": 73,
+    "question": "How does LoRA reduce trainable parameters?",
+    "answer": "LoRA freezes the original model weights and introduces trainable low-rank decomposition matrices into model layers.",
+    "source": "LoRA",
+    "category": "architecture"
+  },
+  {
+    "id": 74,
+    "question": "Why is parameter-efficient fine-tuning important for LLMs?",
+    "answer": "It allows developers to customize large models with limited hardware resources and lower training costs.",
+    "source": "LoRA",
+    "category": "concept"
+  },
+  {
+    "id": 75,
+    "question": "Where is LoRA commonly applied in Transformer models?",
+    "answer": "LoRA is commonly applied to attention layers such as query and value projection matrices.",
+    "source": "LoRA",
+    "category": "implementation"
+  },
+  {
+    "id": 76,
+    "question": "What is InstructGPT?",
+    "answer": "InstructGPT is a language model optimized to follow human instructions using supervised fine-tuning and reinforcement learning from human feedback.",
+    "source": "InstructGPT",
+    "category": "concept"
+  },
+  {
+    "id": 77,
+    "question": "Why was InstructGPT developed?",
+    "answer": "InstructGPT was developed to make language models more helpful, aligned with user intentions, and safer in real-world interactions.",
+    "source": "InstructGPT",
+    "category": "concept"
+  },
+  {
+    "id": 78,
+    "question": "What are the three main stages used to train InstructGPT?",
+    "answer": "The three stages are supervised fine-tuning, reward model training using human feedback, and reinforcement learning with PPO.",
+    "source": "InstructGPT",
+    "category": "architecture"
+  },
+  {
+    "id": 79,
+    "question": "What is Reinforcement Learning from Human Feedback (RLHF)?",
+    "answer": "RLHF is a training approach where human preferences are used to train a reward model that improves model responses through reinforcement learning.",
+    "source": "InstructGPT",
+    "category": "concept"
+  },
+  {
+    "id": 80,
+    "question": "Why is human feedback important for instruction tuning?",
+    "answer": "Human feedback helps models generate responses that better match human expectations for helpfulness, safety, and quality.",
+    "source": "InstructGPT",
+    "category": "concept"
+  },
+  {
+    "id": 81,
+    "question": "What is the difference between GPT-3 and InstructGPT?",
+    "answer": "GPT-3 focuses on next-token prediction, while InstructGPT is fine-tuned to follow human instructions and preferences.",
+    "source": "InstructGPT",
+    "category": "comparison"
+  },
+  {
+    "id": 82,
+    "question": "What is Chain-of-Thought prompting?",
+    "answer": "Chain-of-Thought prompting encourages language models to generate intermediate reasoning steps before producing the final answer.",
+    "source": "Chain-of-Thought Prompting",
+    "category": "concept"
+  },
+  {
+    "id": 83,
+    "question": "Why does Chain-of-Thought prompting improve reasoning?",
+    "answer": "It allows models to break complex problems into smaller intermediate steps, making reasoning tasks easier.",
+    "source": "Chain-of-Thought Prompting",
+    "category": "concept"
+  },
+  {
+    "id": 84,
+    "question": "What is the difference between normal prompting and Chain-of-Thought prompting?",
+    "answer": "Normal prompting asks directly for an answer, while Chain-of-Thought prompting encourages intermediate reasoning before the final output.",
+    "source": "Chain-of-Thought Prompting",
+    "category": "comparison"
+  },
+  {
+    "id": 85,
+    "question": "What is zero-shot Chain-of-Thought prompting?",
+    "answer": "Zero-shot Chain-of-Thought prompting improves reasoning by adding prompts like 'Let's think step by step' without providing examples.",
+    "source": "Chain-of-Thought Prompting",
+    "category": "implementation"
+  },
+  {
+    "id": 86,
+    "question": "Why do larger language models benefit more from Chain-of-Thought prompting?",
+    "answer": "Larger models have stronger reasoning capabilities and can generate meaningful intermediate reasoning steps.",
+    "source": "Chain-of-Thought Prompting",
+    "category": "concept"
+  },
+  {
+    "id": 87,
+    "question": "What is ReAct prompting?",
+    "answer": "ReAct combines reasoning and acting by allowing language models to generate thoughts and perform actions using external tools.",
+    "source": "ReAct",
+    "category": "concept"
+  },
+  {
+    "id": 88,
+    "question": "What are the two main components of ReAct?",
+    "answer": "The two components are reasoning traces and actions that interact with external tools or environments.",
+    "source": "ReAct",
+    "category": "architecture"
+  },
+  {
+    "id": 89,
+    "question": "How is ReAct different from Chain-of-Thought prompting?",
+    "answer": "Chain-of-Thought focuses only on reasoning, while ReAct combines reasoning with external actions such as searching or API calls.",
+    "source": "ReAct",
+    "category": "comparison"
+  },
+  {
+    "id": 90,
+    "question": "Why are external tools useful in ReAct agents?",
+    "answer": "External tools allow models to access updated information, perform calculations, and interact with external systems.",
+    "source": "ReAct",
+    "category": "implementation"
+  },
+  {
+    "id": 91,
+    "question": "How does ReAct help reduce hallucination?",
+    "answer": "ReAct reduces hallucination by allowing models to verify information through external actions instead of relying only on internal knowledge.",
+    "source": "ReAct",
+    "category": "concept"
+  },
+  {
+    "id": 92,
+    "question": "What is the difference between RAG and fine-tuning?",
+    "answer": "RAG provides external knowledge during inference, while fine-tuning changes model parameters using additional training data.",
+    "source": "RAG and LoRA",
+    "category": "comparison"
+  },
+  {
+    "id": 93,
+    "question": "Why is RAG preferred over fine-tuning for frequently changing information?",
+    "answer": "RAG can update knowledge by changing the document database without retraining the entire model.",
+    "source": "Retrieval-Augmented Generation",
+    "category": "implementation"
+  },
+  {
+    "id": 94,
+    "question": "How do embeddings support RAG systems?",
+    "answer": "Embeddings convert text into numerical vectors that enable semantic search and document retrieval.",
+    "source": "Dense Passage Retrieval",
+    "category": "implementation"
+  },
+  {
+    "id": 95,
+    "question": "Why is chunking important in RAG pipelines?",
+    "answer": "Chunking divides documents into smaller meaningful sections so retrieval systems can find relevant information efficiently.",
+    "source": "Retrieval-Augmented Generation",
+    "category": "implementation"
+  },
+  {
+    "id": 96,
+    "question": "What causes poor retrieval performance in RAG systems?",
+    "answer": "Poor retrieval can result from bad chunking, weak embeddings, incorrect indexing, or unsuitable retrieval methods.",
+    "source": "RAG",
+    "category": "implementation"
+  },
+  {
+    "id": 97,
+    "question": "Why should RAG systems evaluate both retrieval and generation?",
+    "answer": "A RAG system can fail because of incorrect retrieved documents or incorrect answer generation, so both components need evaluation.",
+    "source": "RAGAS",
+    "category": "evaluation"
+  },
+  {
+    "id": 98,
+    "question": "What is the relationship between Transformers and modern LLMs?",
+    "answer": "Modern LLMs such as GPT, BERT, LLaMA, and others are built using Transformer architectures.",
+    "source": "Attention Is All You Need",
+    "category": "concept"
+  },
+  {
+    "id": 99,
+    "question": "Why are evaluation frameworks like RAGAS important for production RAG systems?",
+    "answer": "They provide measurable metrics to monitor reliability, accuracy, and grounding of generated responses.",
+    "source": "RAGAS",
+    "category": "evaluation"
+  },
+  {
+    "id": 100,
+    "question": "How do RAG, LoRA, and prompting techniques complement each other in LLM applications?",
+    "answer": "RAG provides external knowledge, LoRA adapts model behavior, and prompting guides model reasoning and output generation.",
+    "source": "RAG, LoRA, Prompting Papers",
+    "category": "architecture"
+  }
+]
