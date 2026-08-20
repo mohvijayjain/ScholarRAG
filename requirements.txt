@@ -1,0 +1,99 @@
+# ----------------------------
+# Core Python
+# ----------------------------
+python-dotenv
+pydantic
+
+
+# ----------------------------
+# PDF Processing
+# ----------------------------
+pymupdf
+langchain-pymupdf4llm
+
+
+# ----------------------------
+# LangChain Core
+# ----------------------------
+langchain
+langchain-core
+langchain-community
+langchain-classic
+
+
+# ----------------------------
+# Vector Database
+# ----------------------------
+chromadb
+langchain-chroma
+
+
+# ----------------------------
+# Embeddings
+# ----------------------------
+sentence-transformers
+langchain-huggingface
+
+
+# ----------------------------
+# Retrieval
+# ----------------------------
+rank-bm25
+
+
+# ----------------------------
+# Reranker
+# ----------------------------
+torch
+transformers
+
+
+# ----------------------------
+# NVIDIA LLM
+# ----------------------------
+langchain-nvidia-ai-endpoints
+
+
+# ----------------------------
+# RAGAS Evaluation
+# ----------------------------
+ragas
+datasets
+
+
+# ----------------------------
+# Data Processing
+# ----------------------------
+numpy
+pandas
+
+
+# ----------------------------
+# API Backend
+# ----------------------------
+fastapi
+uvicorn
+
+
+# ----------------------------
+# Frontend
+# ----------------------------
+streamlit
+
+
+# ----------------------------
+# Logging / Monitoring
+# ----------------------------
+loguru
+
+
+# ----------------------------
+# Testing
+# ----------------------------
+pytest
+
+
+# ----------------------------
+# Production
+# ----------------------------
+gunicorn

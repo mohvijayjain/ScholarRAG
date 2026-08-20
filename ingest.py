@@ -1,6 +1,7 @@
 import os
 import re
 
+
 from langchain_pymupdf4llm import PyMuPDF4LLMLoader
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 from langchain_huggingface import HuggingFaceEmbeddings
@@ -11,7 +12,7 @@ DATA_PATH = "data/"
 DB_PATH = "chroma_db/"
 
 CHUNK_SIZE = 1000
-CHUNK_OVERLAP = 200
+CHUNK_OVERLAP = 300
 
 
 # IMPORTANT:

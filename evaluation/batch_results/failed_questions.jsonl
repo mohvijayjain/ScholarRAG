@@ -1,0 +1,2 @@
+{"batch": 10, "question": "Why is DPR important for modern RAG systems?", "error": "HTTPSConnectionPool(host='integrate.api.nvidia.com', port=443): Read timed out. (read timeout=200.0)", "traceback": "NoneType: None\n"}
+{"batch": 14, "question": "Why is RAG evaluation different from normal LLM evaluation?", "error": "HTTPSConnectionPool(host='integrate.api.nvidia.com', port=443): Read timed out. (read timeout=200.0)", "traceback": "NoneType: None\n"}
