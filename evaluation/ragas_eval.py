@@ -170,7 +170,6 @@ failed_log_path = (
 # =====================================================
 # RUN BATCHES
 # =====================================================
-questions = questions[:5]
 total_questions = len(questions)
 
 

@@ -1,29 +1,61 @@
 import os
 import re
-
+import uuid
+from datetime import datetime
+from pathlib import Path
 
 from langchain_pymupdf4llm import PyMuPDF4LLMLoader
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 from langchain_huggingface import HuggingFaceEmbeddings
 from langchain_chroma import Chroma
 
+from database import (
+    SessionLocal,
+    DocumentHistory
+)
 
-DATA_PATH = "data/"
-DB_PATH = "chroma_db/"
+
+# ============================================================
+# PATH CONFIG
+# ============================================================
+
+BASE_DIR = Path(__file__).parent
+
+
+DOCUMENT_PATH = (
+    BASE_DIR / "data"
+)
+
+
+DB_PATH = (
+    BASE_DIR
+    / "database"
+    / "chroma_db"
+)
+
 
 CHUNK_SIZE = 1000
 CHUNK_OVERLAP = 300
 
 
-# IMPORTANT:
-# This must match rag_pipeline.py embedding model
-EMBEDDING_MODEL = "BAAI/bge-small-en-v1.5"
+EMBEDDING_MODEL = (
+    "BAAI/bge-small-en-v1.5"
+)
 
 
+DOCUMENT_PATH.mkdir(
+    exist_ok=True
+)
 
-# =========================
-# Embedding Model
-# =========================
+
+DB_PATH.mkdir(
+    exist_ok=True,
+)
+
+
+# ============================================================
+# EMBEDDINGS
+# ============================================================
 
 embeddings = HuggingFaceEmbeddings(
     model_name=EMBEDDING_MODEL
@@ -31,21 +63,21 @@ embeddings = HuggingFaceEmbeddings(
 
 
 
-# =========================
-# Clean PDF Text
-# =========================
+# ============================================================
+# CLEAN PDF TEXT
+# ============================================================
 
 def clean_text(text):
 
     patterns = [
 
-        r"#\s*\*?\*?References\*?\*?.*",
+        r"#\s*\*?References\*?.*",
 
-        r"#\s*\*?\*?Acknowledgments\*?\*?.*",
+        r"#\s*\*?Acknowledgments\*?.*",
 
-        r"#\s*\*?\*?Appendix\*?\*?.*",
+        r"#\s*\*?Appendix\*?.*",
 
-        r"#\s*\*?\*?Broader Impact\*?\*?.*"
+        r"#\s*\*?Broader Impact\*?.*"
 
     ]
 
@@ -63,16 +95,16 @@ def clean_text(text):
 
 
 
+# ============================================================
+# SECTION TRACKING
+# ============================================================
 
-
-# =========================
-# Section Tracking
-# =========================
-
-def get_section(text, current_section="Unknown"):
+def get_section(
+    text,
+    current_section="Unknown"
+):
 
     lines = text.split("\n")
-
 
     found_section = current_section
 
@@ -82,11 +114,13 @@ def get_section(text, current_section="Unknown"):
         line = line.strip()
 
 
-        if re.match(r"^#+\s", line):
-
+        if re.match(
+            r"^#+\s",
+            line
+        ):
 
             section = re.sub(
-                r"^#+\s*",
+                r"^#+\s*\*?",
                 "",
                 line
             )
@@ -106,11 +140,9 @@ def get_section(text, current_section="Unknown"):
 
 
 
-
-
-# =========================
-# Text Splitter
-# =========================
+# ============================================================
+# TEXT SPLITTER
+# ============================================================
 
 splitter = RecursiveCharacterTextSplitter(
 
@@ -131,33 +163,36 @@ splitter = RecursiveCharacterTextSplitter(
         " "
 
     ]
-
 )
 
 
 
-
-
-# =========================
-# Process Single PDF
-# =========================
+# ============================================================
+# PROCESS SINGLE PDF
+# ============================================================
 
 def process_pdf(path):
 
 
     print(
-        f"Loading: {os.path.basename(path)}"
+        f"\nProcessing: {path.name}"
     )
 
 
-    loader = PyMuPDF4LLMLoader(path)
+    document_id = str(
+        uuid.uuid4()
+    )
+
+
+    loader = PyMuPDF4LLMLoader(
+        str(path)
+    )
 
 
     docs = loader.load()
 
 
     current_section = "Unknown"
-
 
 
     for doc in docs:
@@ -177,247 +212,230 @@ def process_pdf(path):
         )
 
 
-        doc.metadata["paper_name"] = (
-            os.path.basename(path)
-        )
+        doc.metadata.update(
 
+            {
 
-        doc.metadata["section"] = (
-            current_section
-        )
+                "document_id":
+                    document_id,
 
 
-        doc.metadata["source"] = path
+                "paper_name":
+                    path.name,
 
 
-        doc.metadata["page"] = (
-            doc.metadata.get("page")
-        )
+                "source":
+                    str(path),
 
 
-    return docs
+                "section":
+                    current_section,
 
 
+                "upload_date":
+                    str(datetime.now()),
 
 
-
-# =========================
-# Load All PDFs
-# =========================
-
-def load_documents():
-
-
-    documents = []
-
-
-    for file in os.listdir(DATA_PATH):
-
-
-        if file.endswith(".pdf"):
-
-
-            path = os.path.join(
-                DATA_PATH,
-                file
-            )
-
-
-            documents.extend(
-                process_pdf(path)
-            )
-
-
-    return documents
-
-
-
-
-
-# =========================
-# Build / Update Chroma
-# =========================
-
-def main():
-
-
-    if os.path.exists(DB_PATH):
-
-
-        print(
-            "Existing ChromaDB found"
-        )
-
-
-        db = Chroma(
-
-            persist_directory=DB_PATH,
-
-            embedding_function=embeddings
-
-        )
-
-
-        existing = db.get()
-
-
-
-        existing_sources = set()
-
-
-
-        for metadata in existing["metadatas"]:
-
-
-            if metadata:
-
-
-                existing_sources.add(
-                    metadata.get("source")
-                )
-
-
-
-        print(
-            f"Existing documents: {len(existing_sources)}"
-        )
-
-
-
-        new_documents = []
-
-
-
-        for file in os.listdir(DATA_PATH):
-
-
-            if file.endswith(".pdf"):
-
-
-                path = os.path.join(
-                    DATA_PATH,
-                    file
-                )
-
-
-
-                if path in existing_sources:
-
-
-                    print(
-                        f"Skipping: {file}"
+                "page":
+                    doc.metadata.get(
+                        "page"
                     )
 
-
-                    continue
-
-
-
-                new_documents.extend(
-                    process_pdf(path)
-                )
-
-
-
-
-        if new_documents:
-
-
-            chunks = splitter.split_documents(
-                new_documents
-            )
-
-
-            for chunk in chunks:
-
-                if "section" not in chunk.metadata:
-
-                    chunk.metadata["section"] = "Unknown"
-
-
-
-            print(
-                f"Adding chunks: {len(chunks)}"
-            )
-
-
-            db.add_documents(
-                chunks
-            )
-
-
-            print(
-                "New documents added"
-            )
-
-
-        else:
-
-
-            print(
-                "No new documents"
-            )
-
-
-
-
-    else:
-
-
-        print(
-            "Creating new ChromaDB"
-        )
-
-
-        documents = load_documents()
-
-
-
-        if not documents:
-
-
-            raise Exception(
-                "No PDF found"
-            )
-
-
-
-        chunks = splitter.split_documents(
-            documents
-        )
-
-
-
-        for chunk in chunks:
-
-
-            if "section" not in chunk.metadata:
-
-                chunk.metadata["section"] = "Unknown"
-
-
-
-
-        print(
-            f"Total chunks created: {len(chunks)}"
-        )
-
-
-
-        db = Chroma.from_documents(
-
-            documents=chunks,
-
-            embedding=embeddings,
-
-            persist_directory=DB_PATH
+            }
 
         )
 
 
-        print(
-            "ChromaDB created successfully"
+    return docs, document_id
+
+
+
+# ============================================================
+# CHROMA CONNECTION
+# ============================================================
+
+def get_chroma():
+
+    return Chroma(
+
+        persist_directory=str(
+            DB_PATH
+        ),
+
+        embedding_function=embeddings
+
+    )
+
+
+
+# ============================================================
+# INGEST SINGLE PDF
+# ============================================================
+
+def ingest_pdf(pdf_path):
+
+
+    pdf_path = Path(pdf_path)
+
+
+    if not pdf_path.exists():
+
+        raise FileNotFoundError(
+            pdf_path
         )
+
+
+    db = get_chroma()
+
+
+
+    # --------------------------------
+    # Process PDF
+    # --------------------------------
+
+    documents, document_id = process_pdf(
+        pdf_path
+    )
+
+
+
+    # --------------------------------
+    # Create chunks
+    # --------------------------------
+
+    chunks = splitter.split_documents(
+        documents
+    )
+
+
+
+    for chunk in chunks:
+
+        if (
+            "section"
+            not in chunk.metadata
+        ):
+
+            chunk.metadata[
+                "section"
+            ] = "Unknown"
+
+
+
+    print(
+        f"Chunks created: {len(chunks)}"
+    )
+
+
+
+    # --------------------------------
+    # Store in existing ChromaDB
+    # --------------------------------
+
+    db.add_documents(
+        chunks
+    )
+    
+    session = SessionLocal()
+    record = DocumentHistory(
+        document_id=document_id,
+        filename=pdf_path.name,
+        file_path=str(pdf_path),
+        chunks=len(chunks),
+        status="completed"
+    )
+    session.add(
+        record
+    )
+    session.commit()
+    session.close()
+
+
+    print(
+        "Added to ChromaDB"
+    )
+
+
+    return {
+
+        "document_id":
+            document_id,
+
+
+        "filename":
+            pdf_path.name,
+
+
+        "chunks_added":
+            len(chunks)
+
+    }
+
+
+
+# ============================================================
+# INGEST ALL DOCUMENTS IN FOLDER
+# ============================================================
+
+def ingest_all_documents():
+
+
+    pdf_files = [
+
+        file
+
+        for file in DOCUMENT_PATH.iterdir()
+
+        if file.suffix.lower()
+        == ".pdf"
+
+    ]
+
+
+    results = []
+
+
+    for pdf in pdf_files:
+
+
+        result = ingest_pdf(
+            pdf
+        )
+
+
+        results.append(
+            result
+        )
+
+
+    return results
+
+
+
+# ============================================================
+# TEST
+# ============================================================
+
 if __name__ == "__main__":
 
-    main()
+
+    print(
+        "Available PDFs:"
+    )
+
+
+    for file in DOCUMENT_PATH.iterdir():
+
+        print(
+            file.name
+        )
+
+
+    print(
+        "\nTo ingest a PDF:"
+    )
+
+
+    print(
+        "ingest_pdf('documents/file.pdf')"
+    )

@@ -3,6 +3,7 @@ import requests
 
 from urllib3.exceptions import ProtocolError
 from dotenv import load_dotenv
+from pathlib import Path
 
 from langchain_chroma import Chroma
 from langchain_huggingface import HuggingFaceEmbeddings
@@ -15,7 +16,7 @@ from langchain_core.documents import Document
 
 
 # ============================================================
-# LOAD ENVIRONMENT VARIABLES
+# ENV
 # ============================================================
 
 load_dotenv()
@@ -39,76 +40,217 @@ reranker = CrossEncoder(
 )
 
 
+
 # ============================================================
-# CHROMA VECTOR DATABASE
+# CHROMA DATABASE
 # ============================================================
 
+BASE_DIR = Path(__file__).parent
+
+CHROMA_PATH = (
+    BASE_DIR
+    / "database"
+    / "chroma_db"
+)
+
+
 db = Chroma(
-    persist_directory="chroma_db",
+    persist_directory=str(CHROMA_PATH),
     embedding_function=embeddings
 )
 
 
+
 # ============================================================
-# LOAD ALL DOCUMENTS FROM CHROMA
+# LOAD DOCUMENTS
 # ============================================================
 
-all_docs = db.get(
-    include=["documents", "metadatas"]
-)
+def load_documents():
 
-documents = []
-
-for text, metadata in zip(
-    all_docs["documents"],
-    all_docs["metadatas"]
-):
-
-    documents.append(
-        Document(
-            page_content=text,
-            metadata=metadata
-        )
+    all_docs = db.get(
+        include=[
+            "documents",
+            "metadatas"
+        ]
     )
 
 
-# ============================================================
-# BM25 RETRIEVER
-# ============================================================
+    docs = []
 
-bm25_retriever = BM25Retriever.from_documents(
-    documents
-)
 
-bm25_retriever.k = 15
+    print(
+        "Chroma chunks loaded:",
+        len(all_docs["documents"])
+    )
+
+
+    for text, metadata in zip(
+        all_docs["documents"],
+        all_docs["metadatas"]
+    ):
+
+        docs.append(
+
+            Document(
+                page_content=text,
+                metadata=metadata
+            )
+
+        )
+
+
+    return docs
+
+
+
+documents = load_documents()
+
 
 
 # ============================================================
 # VECTOR RETRIEVER
 # ============================================================
 
-vector_retriever = db.as_retriever(
-    search_type="mmr",
-    search_kwargs={
-        "k": 15
+def get_vector_retriever(
+    document_ids=None
+):
+
+    search_kwargs = {
+        "k":15
     }
-)
+
+
+    if document_ids:
+
+        if len(document_ids) == 1:
+
+            search_kwargs["filter"] = {
+                "document_id": document_ids[0]
+            }
+
+        else:
+
+            search_kwargs["filter"] = {
+
+                "$or":[
+
+                    {
+                        "document_id": doc_id
+                    }
+
+                    for doc_id in document_ids
+
+                ]
+
+            }
+
+
+    return db.as_retriever(
+
+        search_type="mmr",
+
+        search_kwargs=search_kwargs
+
+    )
+
+
 
 
 # ============================================================
-# ENSEMBLE RETRIEVER
+# BM25 RETRIEVER
 # ============================================================
+
+def get_bm25_retriever(
+    document_ids=None
+):
+
+
+    current_documents = load_documents()
+
+
+    filtered_documents = current_documents
+
+
+
+    if document_ids:
+
+
+        filtered_documents = [
+
+            doc
+
+            for doc in current_documents
+
+            if doc.metadata.get(
+                "document_id"
+            ) in document_ids
+
+        ]
+
+
+
+    print(
+        "BM25 documents:",
+        len(filtered_documents)
+    )
+
+
+
+    if not filtered_documents:
+
+        return None
+
+
+
+    bm25 = BM25Retriever.from_documents(
+
+        filtered_documents
+
+    )
+
+
+    bm25.k = 15
+
+
+    return bm25
+
+
+
+
+
+# ============================================================
+# GLOBAL RETRIEVER
+# ============================================================
+
+default_vector = get_vector_retriever()
+
+default_bm25 = get_bm25_retriever()
+
+
 
 retriever = EnsembleRetriever(
+
     retrievers=[
-        vector_retriever,
-        bm25_retriever
+
+        default_vector,
+
+        default_bm25
+
     ],
+
+
     weights=[
+
         0.6,
+
         0.4
+
     ]
+
 )
+
+
+
 
 
 # ============================================================
@@ -116,167 +258,289 @@ retriever = EnsembleRetriever(
 # ============================================================
 
 llm = ChatNVIDIA(
+
     model="meta/llama-3.1-70b-instruct",
+
     temperature=0.2,
+
     max_completion_tokens=1024,
+
     timeout=200
+
 )
 
 
+
+
 # ============================================================
-# RERANK DOCUMENTS
+# RERANK
 # ============================================================
 
-def rerank_docs(question, docs, top_k=4):
+def rerank_docs(
 
-    pairs = [
-        [question, doc.page_content]
+    question,
+
+    docs,
+
+    top_k=4
+
+):
+
+
+    pairs=[
+
+        [
+
+            question,
+
+            doc.page_content
+
+        ]
+
         for doc in docs
+
     ]
 
-    scores = reranker.predict(pairs)
 
-    ranked = sorted(
-        zip(scores, docs),
-        key=lambda x: x[0],
-        reverse=True
+    scores = reranker.predict(
+        pairs
     )
 
+
+    ranked = sorted(
+
+        zip(scores,docs),
+
+        key=lambda x:x[0],
+
+        reverse=True
+
+    )
+
+
     return [
+
         doc
-        for score, doc in ranked[:top_k]
+
+        for score,doc in ranked[:top_k]
+
     ]
 
 
+
+
+
 # ============================================================
-# NVIDIA API RETRY HANDLER
+# NVIDIA RETRY
 # ============================================================
 
-def invoke_with_retry(prompt, max_retries=6):
+def invoke_with_retry(
+
+    prompt,
+
+    max_retries=6
+
+):
+
 
     for attempt in range(max_retries):
 
         try:
 
-            response = llm.invoke(prompt)
+            return llm.invoke(
+                prompt
+            )
 
-            return response
 
         except Exception as e:
 
-            error = str(e)
 
-            is_rate_limit = (
+            error=str(e)
+
+
+            if (
+
                 "429" in error
-                or "Too Many Requests" in error
-            )
 
-            is_connection_error = (
-                isinstance(e, (
-                    requests.exceptions.ConnectionError,
-                    ConnectionResetError,
-                    ProtocolError
-                ))
-                or "ConnectionResetError" in error
-                or "Connection aborted" in error
-                or "MaxRetryError" in error
-                or "NameResolutionError" in error
-                or "Failed to resolve" in error
-            )
+                or
 
-            if is_rate_limit:
+                "Too Many Requests" in error
 
-                wait_time = min(
-                    5 * (2 ** attempt),
+            ):
+
+
+                wait=min(
+                    5*(2**attempt),
                     60
                 )
 
-                print(
-                    f"\n⚠️ NVIDIA rate limit (429)"
-                )
 
                 print(
-                    f"Retry {attempt + 1}/{max_retries}"
+                    f"NVIDIA rate limit. Waiting {wait}s"
                 )
 
-                print(
-                    f"Waiting {wait_time} seconds..."
+
+                time.sleep(wait)
+
+
+
+            elif (
+
+                isinstance(
+                    e,
+                    (
+                        requests.exceptions.ConnectionError,
+                        ConnectionResetError,
+                        ProtocolError
+                    )
                 )
 
-                time.sleep(wait_time)
+                or
 
-            elif is_connection_error:
+                "Connection aborted" in error
 
-                wait_time = min(
-                    5 * (2 ** attempt),
+            ):
+
+
+                wait=min(
+                    5*(2**attempt),
                     60
                 )
 
-                print(
-                    f"\n⚠️ NVIDIA connection error"
-                )
 
                 print(
-                    f"Error: {type(e).__name__}"
+                    f"Connection issue. Waiting {wait}s"
                 )
 
-                print(
-                    f"Retry {attempt + 1}/{max_retries}"
-                )
 
-                print(
-                    f"Waiting {wait_time} seconds..."
-                )
+                time.sleep(wait)
 
-                time.sleep(wait_time)
 
             else:
 
                 raise
 
+
+
     raise RuntimeError(
-        f"NVIDIA API failed after {max_retries} retries."
+        "NVIDIA failed"
     )
 
 
+
+
+
 # ============================================================
-# MAIN RAG FUNCTION
+# ASK FUNCTION
 # ============================================================
 
 def ask(
+
     question,
+
+    document_ids=None,
+
     debug=False
+
 ):
 
-    # --------------------------------------------------------
+
+    # -----------------------------
     # RETRIEVAL
-    # --------------------------------------------------------
-
-    docs = retriever.invoke(
-        question
-    )
+    # -----------------------------
 
 
-    # --------------------------------------------------------
-    # RERANKING
-    # --------------------------------------------------------
+    if document_ids:
+
+
+        print(
+            "Searching selected documents:",
+            document_ids
+        )
+
+
+        vector = get_vector_retriever(
+            document_ids
+        )
+
+
+        bm25 = get_bm25_retriever(
+            document_ids
+        )
+
+
+
+        if bm25:
+
+
+            selected_retriever = EnsembleRetriever(
+
+                retrievers=[
+
+                    vector,
+
+                    bm25
+
+                ],
+
+                weights=[
+
+                    0.6,
+
+                    0.4
+
+                ]
+
+            )
+
+
+        else:
+
+            selected_retriever = vector
+
+
+
+        docs = selected_retriever.invoke(
+            question
+        )
+
+
+
+    else:
+
+
+        docs = retriever.invoke(
+            question
+        )
+
+
+
+
+    # -----------------------------
+    # RERANK
+    # -----------------------------
 
     docs = rerank_docs(
+
         question,
+
         docs
+
     )
 
 
-    # --------------------------------------------------------
-    # DEBUG INFORMATION
-    # --------------------------------------------------------
+
+    # -----------------------------
+    # DEBUG
+    # -----------------------------
 
     if debug:
 
-        for i, doc in enumerate(docs):
+
+        for i,doc in enumerate(docs):
 
             print(
-                f"\n========== CHUNK {i} =========="
+                f"\n====== CHUNK {i} ======"
             )
 
             print(
@@ -284,48 +548,55 @@ def ask(
             )
 
             print(
-                doc.page_content[:500]
+                doc.page_content[:300]
             )
 
 
-    # --------------------------------------------------------
-    # BUILD CONTEXT
-    # --------------------------------------------------------
 
-    context = "\n\n".join(
+
+    # -----------------------------
+    # CONTEXT
+    # -----------------------------
+
+    context="\n\n".join(
+
         [
-            f"""
+
+f"""
 Source: {doc.metadata.get('source')}
 Page: {doc.metadata.get('page')}
 
 Content:
 {doc.page_content}
 """
-            for doc in docs
+
+        for doc in docs
+
         ]
+
     )
 
 
-    # --------------------------------------------------------
+
+    # -----------------------------
     # PROMPT
-    # --------------------------------------------------------
+    # -----------------------------
 
-    prompt = f"""
+    prompt=f"""
+
 You are ScholarRAG, an AI research assistant.
-
-Your task is to answer questions about research papers.
 
 Rules:
 
-1. Use ONLY the provided context.
+1. Use only provided context.
 2. Do not use outside knowledge.
-3. If the answer is not present in the context, clearly say:
+3. If answer is not available say:
 "I could not find this information in the provided documents."
-4. Explain concepts clearly with technical depth.
-5. Always mention the relevant paper and section when possible.
-6. Do not summarize unrelated papers.
+4. Explain technically.
+5. Mention paper and section.
 
-Retrieved Context:
+
+Context:
 
 {context}
 
@@ -335,103 +606,49 @@ Question:
 {question}
 
 
-Answer format:
-
-## Answer
-
-<Explain the answer>
-
-## Sources
-
-- Paper:
-- Section:
-- Page:
+Answer:
 
 """
 
 
-    # --------------------------------------------------------
-    # NVIDIA LLM CALL WITH RETRY
-    # --------------------------------------------------------
 
     response = invoke_with_retry(
         prompt
     )
 
 
-    # --------------------------------------------------------
-    # PRINT SOURCES
-    # --------------------------------------------------------
+
+    # -----------------------------
+    # SOURCES
+    # -----------------------------
 
     print(
         "\n========== SOURCES =========="
     )
 
-    for i, doc in enumerate(docs):
+
+    for i,doc in enumerate(docs):
 
         print(
-            f"""
-{i + 1}.
+
+f"""
+{i+1}.
 Paper: {doc.metadata.get('paper_name')}
 Section: {doc.metadata.get('section')}
 Page: {doc.metadata.get('page')}
 """
+
         )
 
 
-    # --------------------------------------------------------
-    # RETURN RESULT
-    # --------------------------------------------------------
 
     return {
-        "answer": response.content,
-        "retrieved_chunks": docs
+
+        "answer":
+        response.content,
+
+
+        "retrieved_chunks":
+        docs
+
     }
-
-
-# ============================================================
-# TESTING
-# ============================================================
-
-if __name__ == "__main__":
-
-    questions = [
-
-        "What is the main idea of the RAG paper?",
-
-        "How does the retriever work in RAG?",
-
-        "What problem does RAG solve?",
-
-        "How does LoRA reduce trainable parameters?",
-
-        "What is Self-RAG?"
-
-    ]
-
-
-    for question in questions:
-
-        print(
-            "\n\n=============================="
-        )
-
-        print(
-            "QUESTION:",
-            question
-        )
-
-        print(
-            "=============================="
-        )
-
-
-        answer = ask(
-            question,
-            debug=True
-        )
-
-
-        print(
-            answer
-        )
